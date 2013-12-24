@@ -11,5 +11,9 @@
   "bugs": {
     "url": "https://github.com/isaacs/npm-fastly-purge/issues"
   },
-  "homepage": "https://github.com/isaacs/npm-fastly-purge"
+  "homepage": "https://github.com/isaacs/npm-fastly-purge",
+  "dependencies": {
+    "fastly": "~1.0.1",
+    "follow": "~0.10.4"
+  }
 }
