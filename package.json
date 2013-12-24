@@ -1,0 +1,15 @@
+{
+  "name": "npm-fastly-purge",
+  "version": "0.0.0",
+  "description": "Purge the Fastly CDN cache on every change to the npm registry couchdb",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/isaacs/npm-fastly-purge"
+  },
+  "author": "Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/isaacs/npm-fastly-purge/issues"
+  },
+  "homepage": "https://github.com/isaacs/npm-fastly-purge"
+}
