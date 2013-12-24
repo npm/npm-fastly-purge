@@ -1,6 +1,6 @@
 {
   "name": "npm-fastly-purge",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Purge the Fastly CDN cache on every change to the npm registry couchdb",
   "repository": {
     "type": "git",
