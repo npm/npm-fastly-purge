@@ -12,9 +12,6 @@ var fs = require('fs')
 var regSeq = path.resolve(__dirname, 'registry.seq')
 var regSince = readSeq(regSeq)
 
-var puSeq = path.resolve(__dirname, 'public_users.seq')
-var puSince = readSeq(puSeq)
-
 var uSeq = path.resolve(__dirname, '_users.seq')
 var uSince = readSeq(uSeq)
 
@@ -52,13 +49,6 @@ follow({
   writeSeq(regSeq, change.seq)
   purge.call(this, '/' + change.id)
 })
-
-follow({
-  db: conf.public_users,
-  include_docs: false,
-  inactivity_ms: conf.inactivity_ms,
-  since: puSince
-}, userPurge(puSeq))
 
 follow({
   db: conf._users,
