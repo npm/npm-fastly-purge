@@ -46,8 +46,7 @@ follow({
   if (er)
     throw er
 
-  writeSeq(regSeq, change.seq)
-  purge.call(this, '/' + change.id)
+  purge.call(this, '/' + change.id, regSeq, change.seq)
 })
 
 follow({
@@ -60,18 +59,18 @@ follow({
 function userPurge (seqFile) { return function (er, change) {
   if (er)
     throw er
-  writeSeq(seqFile, change.seq)
-  purge.call(this, '/-/user/' + change.id)
+  purge.call(this, '/-/user/' + change.id, seqFile, change.seq)
 }}
 
-function purge(url) {
+function purge(url, seqFile, seq) {
   console.log('PURGE %s', url)
   this.pause()
-  fastly.purge(conf.host, url, onpurge.bind(this))
+  fastly.purge(conf.host, url, onpurge.bind(this, seqFile, seq))
 }
 
-function onpurge(er) {
+function onpurge(seqFile, seq, er) {
   if (er)
     throw er
+  writeSeq(regSeq, seq)
   this.resume()
 }
