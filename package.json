@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/isaacs/npm-fastly-purge",
   "dependencies": {
-    "fastly": "~1.0.1",
+    "fastly": "^1.2.0",
     "follow": "~0.10.4"
   }
 }
