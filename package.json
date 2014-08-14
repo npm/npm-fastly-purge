@@ -14,6 +14,7 @@
   "homepage": "https://github.com/isaacs/npm-fastly-purge",
   "dependencies": {
     "fastly": "^1.2.0",
-    "follow": "~0.10.4"
+    "follow": "~0.10.4",
+    "seq-file": "^1.0.2"
   }
 }

@@ -9,29 +9,9 @@ var fastly = require('fastly')(conf.fastlykey)
 var path = require('path')
 var fs = require('fs')
 
-var regSeq = path.resolve(__dirname, 'registry.seq')
-var regSince = readSeq(regSeq)
-
-var uSeq = path.resolve(__dirname, '_users.seq')
-var uSince = readSeq(uSeq)
-
-function readSeq (file) {
-  try {
-    return +fs.readFileSync(file, 'ascii') || 0
-  } catch (er) {
-    return 0
-  }
-}
-
-var writing = {}
-function writeSeq(file, seq) {
-  if (writing[file])
-    return
-  writing[file] = true
-  fs.writeFile(file, seq + '\n', 'ascii', function() {
-    writing[file] = false
-  })
-}
+var SF = require('seq-file')
+var regSeq = new SF(path.resolve(__dirname, 'registry.seq'))
+var uSeq = new SF(path.resolve(__dirname, '_users.seq'))
 
 // /registry/:pkg -> invalidate /:pkg
 // /_users/:user -> invalidate /-/user/:user
@@ -41,7 +21,7 @@ follow({
   db: conf.registry,
   include_docs: true,
   inactivity_ms: conf.inactivity_ms,
-  since: regSince
+  since: regSeq.readSync()
 }, function onchange (er, change) {
   if (er)
     throw er
@@ -67,14 +47,14 @@ follow({
   db: conf._users,
   include_docs: false,
   inactivity_ms: conf.inactivity_ms,
-  since: uSince
-}, userPurge(uSeq))
+  since: uSeq.readSync()
+}, userPurge)
 
-function userPurge (seqFile) { return function (er, change) {
+function userPurge (er, change) {
   if (er)
     throw er
-  purge.call(this, '/-/user/' + change.id, seqFile, change.seq)
-}}
+  purge.call(this, '/-/user/' + change.id, uSeq, change.seq)
+}
 
 function purge(url, seqFile, seq) {
   console.log('PURGE %s', url)
@@ -85,6 +65,6 @@ function purge(url, seqFile, seq) {
 function onpurge(seqFile, seq, er) {
   if (er && er.statusCode !== 404)
     throw er
-  writeSeq(regSeq, seq)
+  seqFile.save(seq)
   this.resume()
 }
