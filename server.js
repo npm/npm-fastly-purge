@@ -69,7 +69,7 @@ function purge(url, seqFile, seq) {
 }
 
 function onpurge(seqFile, seq, er) {
-  if (er)
+  if (er && er.statusCode !== 404)
     throw er
   writeSeq(regSeq, seq)
   this.resume()
