@@ -39,13 +39,27 @@ function writeSeq(file, seq) {
 
 follow({
   db: conf.registry,
-  include_docs: false,
+  include_docs: true,
   inactivity_ms: conf.inactivity_ms,
   since: regSince
-}, function (er, change) {
+}, function onchange (er, change) {
   if (er)
     throw er
 
+  // Make sure that we're at least c.lag ms behind the db
+  var doc = change.doc
+  if (doc && doc.time && doc.time && doc.time.modified) {
+    var modified = Date.parse(doc.time.modified)
+    var now = Date.now()
+    var age = now - modified
+    if (age < conf.lag) {
+      return setTimeout(function() {
+        purge.call(this, '/' + change.id, regSeq, change.seq)
+      }.bind(this), conf.lag - age)
+    }
+  }
+
+  // Otherwise, if old enough, or no time info, just do it now.
   purge.call(this, '/' + change.id, regSeq, change.seq)
 })
 
